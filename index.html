@@ -15,10 +15,11 @@
 
 html, body {
     width: 100%;
-    height: 100%;
-    background: #000;
+    min-height: 100%;
+    background: #070707;
     font-family: 'Montserrat', sans-serif;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 /* Grain très subtil */
@@ -31,55 +32,103 @@ body::after {
     z-index: 100;
 }
 
-/* Structure principale - les images occupent tout */
 .affiche {
     width: 100%;
-    height: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    color: #f8f5f0;
+}
+
+/* ===== TITRE PRINCIPAL ===== */
+.titre-principal {
+    position: relative;
+    text-align: center;
+    z-index: 20;
+    width: 100%;
+    max-width: 1200px;
+    margin: 50px auto 20px;
+    padding: 0 30px;
+}
+
+.titre-principal h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 4.6rem;
+    font-weight: 900;
+    color: #f8f5f0;
+    line-height: 1.05;
+    text-shadow:
+        0 3px 50px rgba(0, 0, 0, 0.97),
+        0 0 100px rgba(205, 92, 92, 0.7);
+    margin-bottom: 25px;
+    letter-spacing: 2px;
+}
+
+.remerciement {
+    color: #f8f5f0;
+    font-size: 2.2rem;
+    font-weight: 700;
+    text-shadow:
+        0 3px 40px rgba(0, 0, 0, 0.97),
+        0 0 70px rgba(205, 92, 92, 0.6);
+    letter-spacing: 3px;
+    position: relative;
+    padding: 0 40px;
+}
+
+.remerciement::before,
+.remerciement::after {
+    content: "✧";
+    color: #cd5c5c;
+    margin: 0 25px;
+    font-size: 2.4rem;
+    text-shadow: 0 0 35px rgba(205, 92, 92, 1);
+    animation: twinkle 3s infinite;
+}
+
+/* ===== CARROUSEL ===== */
+.carousel {
+    position: relative;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    padding: 10px 80px 70px;
+    gap: 20px;
+}
+
+.viewport {
+    width: 100%;
+    height: auto;
+    overflow-x: auto;
+    overflow-y: visible;
+    border-radius: 24px;
+    position: relative;
+    box-shadow:
+        0 25px 80px rgba(0, 0, 0, 0.6),
+        0 0 120px rgba(205, 92, 92, 0.25);
+    background: #050505;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+}
+
+.slides {
+    display: flex;
+    width: max-content;
+    height: auto;
+}
+
+.slide {
+    min-width: 100%;
+    height: auto;
     display: grid;
     grid-template-columns: 1fr 1fr;
     position: relative;
+    scroll-snap-align: start;
 }
 
-/* Panneaux images pleine hauteur */
-.panel {
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    align-items: flex-end; /* Garde le bas des images visible */
-    justify-content: center;
-    background: #000;
-}
-
-/* Image qui occupe tout l'espace - légèrement agrandie pour couper le haut */
-.panel img {
-    width: 100%;
-    height: 110%; /* Plus grand pour couper uniquement le haut */
-    object-fit: cover;
-    object-position: center 70%; /* Position basse pour montrer le bas de l'image */
-    transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.panel:hover img {
-    transform: scale(1.05);
-}
-
-/* Overlay dégradé - plus doux sur le bas */
-.panel::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-        to top,
-        rgba(11, 3, 3, 0.95) 0%,
-        rgba(11, 3, 3, 0.7) 15%,
-        rgba(11, 3, 3, 0.4) 35%,
-        transparent 65%
-    );
-    z-index: 1;
-}
-
-/* Overlay latéral pour séparer les images */
-.affiche::before {
+.slide::before {
     content: "";
     position: absolute;
     top: 0;
@@ -98,24 +147,111 @@ body::after {
     z-index: 10;
 }
 
-/* ===== TEXTE INTÉGRÉ PLUS HAUT ET PLUS GRAND ===== */
+.slide-meta {
+    position: absolute;
+    top: 24px;
+    left: 30px;
+    z-index: 12;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #f8f5f0;
+    background: rgba(0, 0, 0, 0.55);
+    padding: 12px 18px;
+    border-radius: 999px;
+    border: 1px solid rgba(205, 92, 92, 0.5);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+}
+
+.panel {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    background: #000;
+}
+
+.panel-media {
+    width: 100%;
+    height: auto;
+    max-height: none;
+    object-fit: contain;
+    object-position: top center;
+    transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.panel-media--placeholder {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at top, rgba(205, 92, 92, 0.25), transparent 60%),
+        linear-gradient(135deg, #1a0a0a, #050505 55%, #0d0d0d);
+    color: #f8f5f0;
+    font-family: 'Playfair Display', serif;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+}
+
+.panel-media--placeholder span {
+    font-size: 2.4rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.panel-media--placeholder small {
+    font-size: 1rem;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    letter-spacing: 2px;
+    color: rgba(248, 245, 240, 0.75);
+}
+
+.panel:hover .panel-media {
+    transform: scale(1.05);
+}
+
+.panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to top,
+        rgba(11, 3, 3, 0.95) 0%,
+        rgba(11, 3, 3, 0.7) 15%,
+        rgba(11, 3, 3, 0.4) 35%,
+        transparent 65%
+    );
+    z-index: 1;
+}
+
 .label {
     position: absolute;
-    bottom: 180px; /* PLUS HAUT qu'avant (était 80px) */
-    left: 80px; /* Plus à gauche pour plus d'espace */
+    bottom: 180px;
+    left: 80px;
     color: #f8f5f0;
     z-index: 2;
-    max-width: 550px; /* Plus large */
+    max-width: 550px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.slide.is-active .label {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .label h2 {
     font-family: 'Playfair Display', serif;
-    font-size: 6.5rem; /* PLUS GRAND qu'avant (était 5rem) */
+    font-size: 6rem;
     font-weight: 900;
     letter-spacing: 4px;
     margin-bottom: 25px;
     line-height: 1;
-    text-shadow: 
+    text-shadow:
         0 3px 40px rgba(0, 0, 0, 0.95),
         0 0 80px rgba(205, 92, 92, 0.5);
     position: relative;
@@ -126,186 +262,100 @@ body::after {
     position: absolute;
     bottom: -20px;
     left: 0;
-    width: 140px; /* Plus long */
-    height: 8px; /* Plus épais */
+    width: 140px;
+    height: 8px;
     background: #cd5c5c;
     border-radius: 4px;
     box-shadow: 0 0 40px rgba(205, 92, 92, 0.9);
 }
 
 .label p {
-    font-size: 1.8rem; /* PLUS GRAND qu'avant (était 1.5rem) */
+    font-size: 1.7rem;
     line-height: 1.6;
     opacity: 0.95;
     font-weight: 500;
     text-shadow: 0 3px 25px rgba(0, 0, 0, 0.95);
     margin-top: 35px;
-    max-width: 500px; /* Plus large */
+    max-width: 500px;
 }
 
-/* Panneau droit - alignement à droite */
-.panel:nth-child(3) .label {
+.panel:nth-child(2) .label {
     left: auto;
     right: 80px;
     text-align: right;
 }
 
-.panel:nth-child(3) .label h2::after {
+.panel:nth-child(2) .label h2::after {
     left: auto;
     right: 0;
 }
 
-/* ===== TITRE PRINCIPAL PLUS HAUT ET PLUS GRAND ===== */
-.titre-principal {
-    position: absolute;
-    top: 70px; /* PLUS HAUT qu'avant (était 80px) */
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    z-index: 20;
-    width: 100%;
-    max-width: 1200px; /* Plus large */
-    padding: 0 30px;
-}
-
-.titre-principal h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: 4.8rem; /* PLUS GRAND qu'avant (était 4.2rem) */
-    font-weight: 900; /* Plus gras */
-    color: #f8f5f0;
-    line-height: 1.05;
-    text-shadow: 
-        0 3px 50px rgba(0, 0, 0, 0.97),
-        0 0 100px rgba(205, 92, 92, 0.7);
-    margin-bottom: 30px;
-    letter-spacing: 2px;
-}
-
-/* Message de remerciement PLUS GRAND */
-.remerciement {
-    color: #f8f5f0;
-    font-size: 2.4rem; /* PLUS GRAND qu'avant (était 2rem) */
-    font-weight: 700;
-    text-shadow: 
-        0 3px 40px rgba(0, 0, 0, 0.97),
-        0 0 70px rgba(205, 92, 92, 0.6);
-    letter-spacing: 3px;
-    position: relative;
-    padding: 0 40px;
-}
-
-.remerciement::before,
-.remerciement::after {
-    content: "✧";
-    color: #cd5c5c;
-    margin: 0 25px;
-    font-size: 2.8rem; /* PLUS GRAND */
-    text-shadow: 0 0 35px rgba(205, 92, 92, 1);
-    animation: twinkle 3s infinite;
-}
-
-/* ===== QR CODE PLUS GRAND ===== */
-.qr-container {
-    position: absolute;
-    bottom: 120px; /* PLUS HAUT qu'avant (était 80px) */
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 30px;
-    z-index: 20;
-}
-
-.qr {
-    width: 220px; /* PLUS GRAND qu'avant (était 200px) */
-    height: 220px; /* PLUS GRAND qu'avant (était 200px) */
-    background: linear-gradient(135deg, #f8f5f0 0%, #e8e5e0 100%);
-    border-radius: 28px; /* Plus arrondi */
-    display: flex;
-    flex-direction: column; /* Pour le texte en deux lignes */
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    box-shadow: 
-        0 20px 60px rgba(0, 0, 0, 0.8),
-        0 0 100px rgba(205, 92, 92, 0.7),
-        inset 0 2px 0 rgba(255, 255, 255, 0.5);
-    border: 5px solid #cd5c5c; /* Bordure plus épaisse */
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    cursor: pointer;
-    overflow: hidden;
-}
-
-.qr::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-        135deg,
-        transparent 30%,
-        rgba(205, 92, 92, 0.2) 50%,
-        transparent 70%
-    );
-    animation: shine 4s infinite;
-}
-
-.qr:hover {
-    transform: translateX(-50%) translateY(-8px) scale(1.08); /* Animation plus prononcée */
-    box-shadow: 
-        0 25px 80px rgba(0, 0, 0, 0.9),
-        0 0 120px rgba(205, 92, 92, 0.9),
-        inset 0 2px 0 rgba(255, 255, 255, 0.6);
-}
-
-.qr span {
-    font-size: 1.8rem; /* PLUS GRAND */
-    font-weight: 800;
-    color: #8b3a3a;
-    letter-spacing: 2px;
-    z-index: 1;
-}
-
-.qr span:first-child {
-    font-size: 1.6rem;
-    margin-bottom: 8px;
-    color: #b22222;
-    font-weight: 700;
-}
-
-/* Texte d'invitation PLUS GRAND et SANS CADRE */
-.invitation {
-    font-size: 1.5rem; /* PLUS GRAND qu'avant (était 1.3rem) */
-    color: #f8f5f0;
-    text-align: center;
-    line-height: 1.5;
-    text-shadow: 
-        0 3px 35px rgba(0, 0, 0, 0.97),
-        0 0 50px rgba(205, 92, 92, 0.7);
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    /* SUPPRIMÉ le cadre et le fond */
-    background: transparent;
+/* ===== NAVIGATION ===== */
+.nav {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
     border: none;
-    backdrop-filter: none;
-    padding: 0;
-}
-
-.invitation strong {
+    background: rgba(10, 10, 10, 0.7);
     color: #f8f5f0;
-    font-weight: 700;
-    display: block;
-    margin-top: 8px;
-    font-size: 1.6rem; /* PLUS GRAND */
+    font-size: 2rem;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: transform 0.3s ease, background 0.3s ease;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.6);
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 15;
 }
 
-/* ===== VILLE D'ALBI PLUS GRAND ===== */
+.nav:hover {
+    transform: translateY(-50%) scale(1.05);
+    background: rgba(205, 92, 92, 0.6);
+}
+
+.nav.prev {
+    left: 20px;
+}
+
+.nav.next {
+    right: 20px;
+}
+
+.indicators {
+    position: absolute;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 15;
+}
+
+.indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid rgba(248, 245, 240, 0.8);
+    background: transparent;
+    cursor: pointer;
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.indicator.is-active {
+    background: #cd5c5c;
+    border-color: #cd5c5c;
+    transform: scale(1.2);
+}
+
+/* ===== VILLE D'ALBI ===== */
 .ville-albi {
     position: absolute;
-    bottom: 50px; /* PLUS HAUT qu'avant (était 40px) */
-    right: 50px; /* Plus à gauche */
+    bottom: 35px;
+    right: 40px;
     color: #cd5c5c;
-    font-size: 1.4rem; /* PLUS GRAND qu'avant (était 1.2rem) */
+    font-size: 1.2rem;
     font-weight: 700;
     letter-spacing: 4px;
     text-transform: uppercase;
@@ -314,37 +364,140 @@ body::after {
     z-index: 20;
 }
 
+/* ===== AVIS FLOATING ===== */
+.avis-button {
+    position: fixed;
+    right: 28px;
+    bottom: 28px;
+    z-index: 30;
+    background: linear-gradient(135deg, #cd5c5c, #b54848);
+    color: #fffaf6;
+    border: none;
+    border-radius: 999px;
+    padding: 16px 22px;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    box-shadow:
+        0 18px 40px rgba(0, 0, 0, 0.45),
+        0 0 35px rgba(205, 92, 92, 0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.avis-button:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 22px 50px rgba(0, 0, 0, 0.55),
+        0 0 45px rgba(205, 92, 92, 0.6);
+}
+
+.avis-popup {
+    position: fixed;
+    right: 28px;
+    bottom: 90px;
+    width: min(720px, 92vw);
+    max-height: min(80vh, 720px);
+    background: rgba(8, 8, 8, 0.96);
+    border-radius: 24px;
+    border: 1px solid rgba(205, 92, 92, 0.35);
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.65),
+        0 0 60px rgba(205, 92, 92, 0.35);
+    overflow: hidden;
+    display: none;
+    z-index: 35;
+}
+
+.avis-popup.is-open {
+    display: block;
+}
+
+.avis-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: rgba(16, 16, 16, 0.95);
+    border-bottom: 1px solid rgba(205, 92, 92, 0.2);
+}
+
+.avis-header h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.avis-close {
+    background: transparent;
+    border: none;
+    color: #f8f5f0;
+    font-size: 1.4rem;
+    cursor: pointer;
+}
+
+.avis-iframe {
+    width: 100%;
+    height: 70vh;
+    min-height: 520px;
+    border: none;
+}
+
+@media (max-width: 700px) {
+    .avis-button {
+        right: 18px;
+        bottom: 18px;
+        padding: 14px 18px;
+    }
+
+    .avis-popup {
+        right: 18px;
+        bottom: 80px;
+    }
+
+    .avis-iframe {
+        height: 65vh;
+        min-height: 420px;
+    }
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1400px) {
     .titre-principal h1 {
-        font-size: 4.2rem;
+        font-size: 4rem;
     }
-    
+
     .remerciement {
-        font-size: 2.1rem;
+        font-size: 2rem;
     }
-    
+
     .label h2 {
-        font-size: 5.5rem;
+        font-size: 5.2rem;
     }
-    
+
     .label p {
-        font-size: 1.6rem;
+        font-size: 1.5rem;
     }
-    
-    .qr {
-        width: 200px;
-        height: 200px;
+}
+
+@media (max-width: 1100px) {
+    .carousel {
+        padding: 10px 50px 70px;
+    }
+
+    .nav {
+        width: 50px;
+        height: 50px;
     }
 }
 
 @media (max-width: 1000px) {
-    .affiche {
+    .slide {
         grid-template-columns: 1fr;
         grid-template-rows: 1fr 1fr;
     }
-    
-    .affiche::before {
+
+    .slide::before {
         left: 0;
         top: 50%;
         transform: translateY(-50%);
@@ -359,149 +512,82 @@ body::after {
             transparent 100%
         );
     }
-    
-    .titre-principal {
-        top: 50px;
-    }
-    
-    .titre-principal h1 {
-        font-size: 3.5rem;
-    }
-    
-    .remerciement {
-        font-size: 1.8rem;
-    }
-    
+
     .label {
         bottom: 120px;
         left: 50px;
     }
-    
-    .panel:nth-child(3) .label {
+
+    .panel:nth-child(2) .label {
         right: 50px;
     }
-    
+
     .label h2 {
-        font-size: 4.5rem;
+        font-size: 4.4rem;
     }
-    
+
     .label p {
-        font-size: 1.4rem;
-    }
-    
-    .qr-container {
-        bottom: 80px;
-    }
-    
-    .qr {
-        width: 180px;
-        height: 180px;
-    }
-    
-    .ville-albi {
-        bottom: 35px;
-        right: 35px;
-        font-size: 1.2rem;
+        font-size: 1.3rem;
     }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
     .titre-principal h1 {
-        font-size: 2.8rem;
+        font-size: 3rem;
     }
-    
+
     .remerciement {
         font-size: 1.5rem;
         letter-spacing: 2px;
     }
-    
+
     .remerciement::before,
     .remerciement::after {
         margin: 0 15px;
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
-    
+
+    .carousel {
+        padding: 10px 20px 70px;
+    }
+
+    .slide-meta {
+        font-size: 0.8rem;
+        padding: 8px 14px;
+    }
+
     .label h2 {
         font-size: 3.5rem;
     }
-    
+
     .label p {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         max-width: 300px;
     }
-    
-    .qr {
-        width: 160px;
-        height: 160px;
+
+    .nav {
+        width: 44px;
+        height: 44px;
+        font-size: 1.6rem;
     }
-    
-    .qr span {
-        font-size: 1.5rem;
-    }
-    
-    .qr span:first-child {
-        font-size: 1.3rem;
-    }
-    
-    .invitation {
-        font-size: 1.2rem;
-    }
-    
-    .invitation strong {
-        font-size: 1.3rem;
-    }
-    
-    .ville-albi {
-        font-size: 1rem;
-        letter-spacing: 3px;
+}
+
+@media (max-width: 500px) {
+    .nav {
+        display: none;
     }
 }
 
 /* ===== ANIMATIONS ===== */
-@keyframes shine {
-    0% {
-        transform: translateX(-100%) translateY(-100%) rotate(45deg);
-    }
-    100% {
-        transform: translateX(100%) translateY(100%) rotate(45deg);
-    }
-}
-
-@keyframes pulse {
-    0%, 100% { 
-        box-shadow: 
-            0 20px 60px rgba(0, 0, 0, 0.8),
-            0 0 100px rgba(205, 92, 92, 0.7);
-    }
-    50% { 
-        box-shadow: 
-            0 20px 80px rgba(0, 0, 0, 0.9),
-            0 0 120px rgba(205, 92, 92, 0.9);
-    }
-}
-
 @keyframes twinkle {
-    0%, 100% { 
-        opacity: 0.6; 
+    0%, 100% {
+        opacity: 0.6;
         transform: scale(1);
     }
-    50% { 
-        opacity: 1; 
+    50% {
+        opacity: 1;
         transform: scale(1.2);
     }
-}
-
-.qr {
-    animation: pulse 4s infinite;
-}
-
-.remerciement::before,
-.remerciement::after {
-    animation: twinkle 3s infinite;
-}
-
-.remerciement::after {
-    animation-delay: 1.5s;
 }
 </style>
 </head>
@@ -510,7 +596,6 @@ body::after {
 
 <div class="affiche">
 
-    <!-- Titre principal -->
     <div class="titre-principal">
         <h1>Une ville propre<br>ne se fait pas toute seule</h1>
         <div class="remerciement">
@@ -518,112 +603,204 @@ body::after {
         </div>
     </div>
 
-    <!-- AVANT - Image gauche -->
-    <div class="panel">
-        <img src="etat_avant.jpeg" alt="Albi avant nettoyage">
-        <div class="label">
-            <h2>AVANT</h2>
-            <p>
-                Après les événements, la ville garde les traces de notre passage.
-                Un travail invisible attend ceux qui nettoient notre quotidien.
-            </p>
+    <div class="carousel" aria-label="Galerie avant/après">
+        <button class="nav prev" type="button" aria-label="Voir la série précédente">‹</button>
+        <div class="viewport">
+            <div class="slides">
+                <section class="slide is-active" data-title="Centre historique">
+                    <div class="slide-meta">Centre historique</div>
+                    <div class="panel">
+                        <img class="panel-media" src="etat_avant.jpeg" alt="Albi avant nettoyage">
+                        <div class="label">
+                            <h2>AVANT</h2>
+                            <p>
+                                Après les événements, la ville garde les traces de notre passage.
+                                Un travail invisible attend ceux qui nettoient notre quotidien.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <img class="panel-media" src="etat_apres.jpeg" alt="Albi après nettoyage">
+                        <div class="label">
+                            <h2>APRÈS</h2>
+                            <p>
+                                Grâce à l'engagement quotidien des agents de propreté,
+                                Albi retrouve sa beauté et son éclat.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="slide" data-title="Berges du Tarn">
+                    <div class="slide-meta">Berges du Tarn</div>
+                    <div class="panel">
+                        <div class="panel-media panel-media--placeholder">
+                            <span>ALBI AVANT</span>
+                            <small>Photo à remplacer</small>
+                        </div>
+                        <div class="label">
+                            <h2>AVANT</h2>
+                            <p>
+                                Une matinée animée laisse parfois des traces le long du Tarn.
+                                Les équipes interviennent pour redonner un visage apaisé.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-media panel-media--placeholder">
+                            <span>ALBI APRÈS</span>
+                            <small>Photo à remplacer</small>
+                        </div>
+                        <div class="label">
+                            <h2>APRÈS</h2>
+                            <p>
+                                L'espace est rendu aux habitants et visiteurs,
+                                prêt pour une nouvelle journée au bord de l'eau.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="slide" data-title="Place du Vigan">
+                    <div class="slide-meta">Place du Vigan</div>
+                    <div class="panel">
+                        <div class="panel-media panel-media--placeholder">
+                            <span>ALBI AVANT</span>
+                            <small>Photo à remplacer</small>
+                        </div>
+                        <div class="label">
+                            <h2>AVANT</h2>
+                            <p>
+                                Les soirées festives animent la place,
+                                mais laissent aussi leur empreinte au petit matin.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-media panel-media--placeholder">
+                            <span>ALBI APRÈS</span>
+                            <small>Photo à remplacer</small>
+                        </div>
+                        <div class="label">
+                            <h2>APRÈS</h2>
+                            <p>
+                                Une fois nettoyée, la place retrouve sa lumière
+                                et ses façades historiques brillent à nouveau.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <button class="nav next" type="button" aria-label="Voir la série suivante">›</button>
+        <div class="indicators" role="tablist" aria-label="Navigation des séries">
+            <button class="indicator is-active" type="button" aria-label="Aller à la série 1"></button>
+            <button class="indicator" type="button" aria-label="Aller à la série 2"></button>
+            <button class="indicator" type="button" aria-label="Aller à la série 3"></button>
         </div>
     </div>
 
-    <!-- APRÈS - Image droite -->
-    <div class="panel">
-        <img src="etat_apres.jpeg" alt="Albi après nettoyage">
-        <div class="label">
-            <h2>APRÈS</h2>
-            <p>
-                Grâce à l'engagement quotidien des agents de propreté,
-                Albi retrouve sa beauté et son éclat.
-            </p>
-        </div>
-    </div>
-
-    <!-- QR Code -->
-    <div class="qr-container">
-        <div class="qr">
-            <span>SCANNEZ</span>
-            <span>APRES</span>
-        </div>
-        <div class="invitation">
-            Découvrez ce qu'on ne voit pas<br>
-            <strong>Explorez en 360°</strong>
-        </div>
-    </div>
-
-    <!-- Logo Albi -->
     <div class="ville-albi">VILLE D'ALBI</div>
 
 </div>
 
+<button class="avis-button" type="button" aria-expanded="false" aria-controls="avis-popup">
+    Donner mon avis
+</button>
+
+<div class="avis-popup" id="avis-popup" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Formulaire d'avis">
+    <div class="avis-header">
+        <h3>Votre avis compte</h3>
+        <button class="avis-close" type="button" aria-label="Fermer la fenêtre">✕</button>
+    </div>
+    <iframe
+        class="avis-iframe"
+        src="https://docs.google.com/forms/d/e/1FAIpQLSf8sx5LtxcffmeHB01lItBuzqDlFcdGSLCqW32szlt8rNhDBA/viewform?embedded=true"
+        title="Formulaire d'avis"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+    ></iframe>
+</div>
+
 <script>
-// Effet d'apparition élégant
 document.addEventListener('DOMContentLoaded', function() {
-    // Éléments à animer
-    const elements = {
-        '.titre-principal': { opacity: 0, transform: 'translateX(-50%) translateY(-50px)' },
-        '.label': { opacity: 0, transform: 'translateY(50px)' },
-        '.qr-container': { opacity: 0, transform: 'translateX(-50%) translateY(50px)' },
-        '.ville-albi': { opacity: 0, transform: 'translateX(50px)' }
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const track = document.querySelector('.slides');
+    const viewport = document.querySelector('.viewport');
+    const prevButton = document.querySelector('.nav.prev');
+    const nextButton = document.querySelector('.nav.next');
+    const indicators = Array.from(document.querySelectorAll('.indicator'));
+    let currentIndex = 0;
+
+    const setSlide = (index) => {
+        currentIndex = (index + slides.length) % slides.length;
+        slides[currentIndex].scrollIntoView({ behavior: 'smooth', inline: 'start' });
+        slides.forEach((slide, idx) => {
+            slide.classList.toggle('is-active', idx === currentIndex);
+        });
+        indicators.forEach((dot, idx) => {
+            dot.classList.toggle('is-active', idx === currentIndex);
+            dot.setAttribute('aria-pressed', idx === currentIndex ? 'true' : 'false');
+        });
     };
-    
-    // Appliquer les états initiaux
-    Object.keys(elements).forEach(selector => {
-        const el = document.querySelectorAll(selector);
-        el.forEach(element => {
-            Object.assign(element.style, elements[selector]);
-        });
+
+    prevButton.addEventListener('click', () => setSlide(currentIndex - 1));
+    nextButton.addEventListener('click', () => setSlide(currentIndex + 1));
+
+    indicators.forEach((dot, idx) => {
+        dot.addEventListener('click', () => setSlide(idx));
     });
-    
-    // Animation séquentielle
-    setTimeout(() => {
-        const titre = document.querySelector('.titre-principal');
-        titre.style.transition = 'opacity 1.5s ease, transform 1.5s ease';
-        titre.style.opacity = '1';
-        titre.style.transform = 'translateX(-50%) translateY(0)';
-    }, 300);
-    
-    setTimeout(() => {
-        const labels = document.querySelectorAll('.label');
-        labels.forEach((label, index) => {
-            label.style.transition = `opacity 1.2s ease ${index * 0.3}s, transform 1.2s ease ${index * 0.3}s`;
-            label.style.opacity = '1';
-            label.style.transform = 'translateY(0)';
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowLeft') {
+            setSlide(currentIndex - 1);
+        }
+        if (event.key === 'ArrowRight') {
+            setSlide(currentIndex + 1);
+        }
+    });
+
+    let scrollTimeout;
+    const syncActiveSlide = () => {
+        const slideWidth = viewport.clientWidth;
+        const index = Math.round(viewport.scrollLeft / slideWidth);
+        currentIndex = Math.min(Math.max(index, 0), slides.length - 1);
+        slides.forEach((slide, idx) => {
+            slide.classList.toggle('is-active', idx === currentIndex);
         });
-    }, 800);
-    
-    setTimeout(() => {
-        const qr = document.querySelector('.qr-container');
-        const ville = document.querySelector('.ville-albi');
-        
-        if (qr) {
-            qr.style.transition = 'opacity 1s ease, transform 1s ease';
-            qr.style.opacity = '1';
-            qr.style.transform = 'translateX(-50%) translateY(0)';
+        indicators.forEach((dot, idx) => {
+            dot.classList.toggle('is-active', idx === currentIndex);
+            dot.setAttribute('aria-pressed', idx === currentIndex ? 'true' : 'false');
+        });
+    };
+
+    viewport.addEventListener('scroll', () => {
+        window.clearTimeout(scrollTimeout);
+        scrollTimeout = window.setTimeout(syncActiveSlide, 120);
+    });
+
+    setSlide(0);
+
+    const avisButton = document.querySelector('.avis-button');
+    const avisPopup = document.querySelector('.avis-popup');
+    const avisClose = document.querySelector('.avis-close');
+
+    const toggleAvis = (open) => {
+        const shouldOpen = typeof open === 'boolean' ? open : !avisPopup.classList.contains('is-open');
+        avisPopup.classList.toggle('is-open', shouldOpen);
+        avisPopup.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
+        avisButton.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+    };
+
+    avisButton.addEventListener('click', () => toggleAvis());
+    avisClose.addEventListener('click', () => toggleAvis(false));
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            toggleAvis(false);
         }
-        
-        if (ville) {
-            ville.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-            ville.style.opacity = '1';
-            ville.style.transform = 'translateX(0)';
-        }
-    }, 1500);
-    
-    // Interaction QR Code
-    const qrBtn = document.querySelector('.qr');
-    qrBtn.addEventListener('click', function() {
-        this.style.animation = 'none';
-        this.style.transform = 'translateX(-50%) scale(0.95)';
-        
-        setTimeout(() => {
-            this.style.animation = 'pulse 4s infinite';
-            this.style.transform = 'translateX(-50%) scale(1.08)';
-        }, 200);
-        
-        console.log("Redirection vers l'expérience 360° immersive");
     });
 });
 </script>
