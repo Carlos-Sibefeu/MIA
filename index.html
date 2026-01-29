@@ -643,6 +643,24 @@ body::after {
 
 </div>
 
+<button class="avis-button" type="button" aria-expanded="false" aria-controls="avis-popup">
+    Donner mon avis
+</button>
+
+<div class="avis-popup" id="avis-popup" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Formulaire d'avis">
+    <div class="avis-header">
+        <h3>Votre avis compte</h3>
+        <button class="avis-close" type="button" aria-label="Fermer la fenêtre">✕</button>
+    </div>
+    <iframe
+        class="avis-iframe"
+        src="https://docs.google.com/forms/d/e/1FAIpQLSf8sx5LtxcffmeHB01lItBuzqDlFcdGSLCqW32szlt8rNhDBA/viewform?embedded=true"
+        title="Formulaire d'avis"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+    ></iframe>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const slides = Array.from(document.querySelectorAll('.slide'));
